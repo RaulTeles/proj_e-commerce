@@ -1,6 +1,7 @@
 from django.contrib import admin
 from . import models
 
+#Criando a classe 'inline' para mostrar toda a lista em linha
 class VariacaoInline(admin.TabularInline):
     model = models.Variacao
     extra = 1
