@@ -100,18 +100,26 @@ class AddToCard(View):
         )
         return redirect(http_referer)
     
-
-
-        return HttpResponse (f'{variacao.Produto} {variacao.nome}')
     
-class RemoveFromCart(View):
+class RemoverDoCarrinho(View):
     def get(self, *args, **kwargs):
+        http_referer = self.request.META.get('HTTP_REFERER',reverse('produto:lista'))
+        variacao_id = self.request.GET.get('vid')
+        
+        if not variacao_id:
+            return redirect (http_referer)
+        
+
         return HttpResponse('Remover do carrinho')
-class Cart(View):
+
+
+class Carrinho(View):
     def get(self, *args, **kwargs):
+        contexto = {'carrinho':self.request.session.get('carrinho', {})
+        }
         return render(
             self.request,
-            'produto/carrinho.html'
+            'produto/carrinho.html', contexto
             )
         
 class Finalizar(View):
