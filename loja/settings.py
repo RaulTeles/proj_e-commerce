@@ -134,11 +134,11 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 MESSAGE_TAGS = {
-    constants.DEBUG: 'alerta-info',
-    constants.ERROR: 'alerta-danger',
-    constants.INFO: 'alerta-info',
-    constants.SUCCESS: 'alerta-success',
-    constants.WARNING: 'alerta-warning',
+    constants.DEBUG: 'alert-info',
+    constants.ERROR: 'alert-danger',
+    constants.INFO: 'alert-info',
+    constants.SUCCESS: 'alert-success',
+    constants.WARNING: 'alert-warning',
 }
 
 #configurando quanto tempo cada seção vai durar
