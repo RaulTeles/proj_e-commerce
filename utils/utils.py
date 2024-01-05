@@ -3,3 +3,11 @@ def formata_preco(val):
 
 def cart_total_qtd(carrinho):
     return sum([item['quantidade'] for item in carrinho.values()])
+
+def cart_totals(carrinho):
+    return sum(
+        [
+            #obtenha o preco+_quantitativo promocional SE tiver preco_quantitativo_promocional ELSE obtenha o preco_quantitativo
+            item.get('preco_quantitativo_promocional') if item.get('preco_quantitativo_promocional') else item.get('preco_quantitativo') for item in carrinho.values()
+        ]
+    )
