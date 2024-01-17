@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from . import models
 from . import forms
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
 import copy
 
 #criando uma classe para fazer com que as classes Criar e Update herde dela
@@ -20,10 +21,11 @@ class BasePerfil(View):
 
         #criando uma logica para ficiar se o usuário está logado
         if self.request.user.is_authenticated:
-            self.perfil = models.Perfil.objects.filter(usuario=self.request.user)
+            self.perfil = models.Perfil.objects.filter(usuario=self.request.user).first()
             self.contexto = {
                 'userForm' : forms.UserForms(data=self.request.POST or None, usuario=self.request.user, instance=self.request.user),
-                'perfilForm' :forms.PerfilForm(data=self.request.POST or None),
+
+                'perfilForm' :forms.PerfilForm(data=self.request.POST or None, instance=self.perfil),
             }
         else:
             self.contexto = {
@@ -33,6 +35,10 @@ class BasePerfil(View):
 
         self.userform = self.contexto['userForm']
         self.perfilform = self.contexto['perfilForm']
+
+        #renderizar a pagina especifica quando o usuario já estiver logado e for atualizar o perfil
+        if self.request.user.is_authenticated:
+            self.template_name = 'perfil/atualizar.html'
 
         self.renderizar = render(self.request, self.template_name, self.contexto)
 
@@ -60,7 +66,16 @@ class Criar(BasePerfil):
             
             if password:
                 usuario.set_password(password)
-            
+
+            if not self.perfil:
+                self.perfilform.cleaned_data['usuario'] = usuario
+                perfil = models.Perfil(**self.perfilform.cleaned_data)
+                perfil.save()
+            else:
+                perfil = self.perfilform.save(commit=False)
+                perfil.usuario = usuario
+                perfil.save()
+
             usuario.email = email
             usuario.first_name = first_name
             usuario.last_name = last_name
@@ -75,6 +90,17 @@ class Criar(BasePerfil):
             perfil = self.perfilform.save(commit=False)
             perfil.usuario = usuario
             perfil.save()
+
+        #criando uma lógica para qua quando o usuário altere alguma informação do seu perfil, ele não perca as informações do carrinho
+        if password:
+            autentica = authenticate(self.request,
+                                    username=usuario.username,
+                                    password=password)
+            
+            if autentica:
+                login(self.request, user=usuario)
+
+        #Logica para que se em algum momento exclua um perfil de usuario, com ele logado, possa recriar sem erro
 
         #continuação da logica da sessão do carrinho para quando alterar a senha nao perder os itens do carrinho
         self.request.session['carrinho'] = self.carrinho
