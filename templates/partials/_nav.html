@@ -9,27 +9,29 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ml-auto">
-            <li class="nav-item active">
+            {% comment %} <li class="nav-item active">
                 <a class="nav-link" href="{% url "perfil:criar" %}">Perfil <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
+            </li> {% endcomment %}
+            {% comment %} <li class="nav-item">
                 <a class="nav-link" href="Link">Link</a>
-            </li>
+            </li> {% endcomment %}
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Dropdown
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="#">Action</a>
-                    <a class="dropdown-item" href="#">Another action</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Something else here</a>
-                </div>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link disabled" href="#">Disabled</a>
-            </li>
+
+                {% if request.user.is_authenticated %}
+                    <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Conta<span class="sr-only">(current)</span>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{% url "perfil:criar" %}">Alterar Cadastro</a>
+                        <a class="dropdown-item" href="{% url "perfil:logout" %}">Sair</a>
+                    </div>
+                    {% else %}
+                    <li class="nav-item active">
+                <a class="nav-link" href="{% url "perfil:criar" %}">Login <span class="sr-only">(current)</span></a>
+                    </li>
+                {% endif %}
+            
             {% if request.session.carrinho%}
                 <li class="nav-item">
                     <a class="nav-link nav-cart-link active" href="{% url 'produto:carrinho' %}">
@@ -44,6 +46,8 @@
                         </span>
                     </a>
                 </li>
+                {% else %}
+                
             {% endif %}
         </ul>
         <form class="form-inline my-2 my-lg-0">
