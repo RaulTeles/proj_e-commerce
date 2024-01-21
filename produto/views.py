@@ -141,4 +141,13 @@ class Carrinho(View):
         
 class ResumoDaCompra(View):
     def get(self, *args, **kwargs):
-        return HttpResponse('Finalizar')
+        #criando um decarator, para que essa view só seja acessada para usuários logados
+        if not self.request.user.is_authenticated:
+            return redirect('perfil:criar')
+
+        contexto = {
+            'usuario': self.request.user,
+            'carrinho': self.request.session['carrinho'],
+        }
+
+        return render (self.request, 'produto/resumo.html', contexto)

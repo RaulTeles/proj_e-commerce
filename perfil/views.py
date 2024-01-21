@@ -50,6 +50,10 @@ class BasePerfil(View):
 class Criar(BasePerfil):
     def post(self, *args, **kwargs):
         if not self.userform.is_valid() or not self.perfilform.is_valid():
+            messages.error(
+                self.request,
+                'Existem erros no fomulário de cadastro, preencha os campos corretamente.'
+            )
             return self.renderizar
         
         username = self.userform.cleaned_data.get('username')
@@ -110,7 +114,7 @@ class Criar(BasePerfil):
             self.request,
             'Seu Cadastro foi criado/atualizado com Sucesso!'
         )
-        return redirect('perfil:criar')
+        return redirect('produto:carrinho')
         # return self.renderizar
 
 class Update(View):
