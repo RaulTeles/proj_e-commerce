@@ -5,6 +5,7 @@ from django.views import View
 from django.contrib import messages
 from django.http import HttpResponse
 from . import models
+from perfil.models import Perfil
 # Create your views here.
 class ListaProduto(ListView):
     model = models.Produto
@@ -144,6 +145,26 @@ class ResumoDaCompra(View):
         #criando um decarator, para que essa view só seja acessada para usuários logados
         if not self.request.user.is_authenticated:
             return redirect('perfil:criar')
+        
+        #checando se o cliente possui o perfil completo cadastrado antes de efetuar a compra
+        perfil = Perfil.objects.filter(usuario=self.request.user).exists()
+
+        if not perfil:
+            messages.error(
+                self.request,
+                'Usuário sem Perfil.'
+            )
+            return redirect('perfil:criar')
+        
+        #criando uma logica para não permitir o usuario chear no resumo da compra sem item no carrinho
+
+        if not self.request.session.get('carrinho'):
+            messages.error(
+                self.request,
+                'Seu carrinho está vazio!'
+            )
+            return redirect('produto:lista')
+        
 
         contexto = {
             'usuario': self.request.user,
