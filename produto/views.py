@@ -39,7 +39,8 @@ class AddToCard(View):
         variacao = get_object_or_404(models.Variacao, id=variacao_id)
         variacao_estoque = variacao.estoque
         produto = variacao.Produto
-        produto_id = produto.nome
+        
+        produto_id = produto.id
         produto_nome = produto.nome
         variacao_nome = variacao.nome or ''
         preco_unitario = variacao.preco
