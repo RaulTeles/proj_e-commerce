@@ -23,6 +23,7 @@
                         Conta<span class="sr-only">(current)</span>
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{% url "pedido:lista" %}">Meus Pedidos</a>
                         <a class="dropdown-item" href="{% url "perfil:criar" %}">Alterar Cadastro</a>
                         <a class="dropdown-item" href="{% url "perfil:logout" %}">Sair</a>
                     </div>

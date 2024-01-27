@@ -9,24 +9,25 @@ from produto.models import Variacao
 from utils import utils
 
 #Criando uma classe para verificar se o usuário está criado para acessar uma outra classe
-class DispatchRequiredLogin(View):
+class DispatchRequiredLoginMixin(View):
     def dispatch(self, request, *args, **kwargs):
         if not self.request.user.is_authenticated:
             return redirect('perfil:criar')
 
         return super().dispatch(request, *args, **kwargs)
-class Pagar(DispatchRequiredLogin, DetailView):
+    #Criando um método para fazer com que só apareça os pedidos do usuário que realizou eles
+
+    def get_queryset(self, *args, **kwargs):
+        qs = super().get_queryset(*args, **kwargs)
+        qs = qs.filter(usuario=self.request.user)
+        return qs
+class Pagar(DispatchRequiredLoginMixin, DetailView):
         template_name = 'pedido/pagar.html'
         model = Pedido
         pk_url_kwarg = 'pk'
         context_object_name = 'pedido'
 
-        #Criando um método para fazer com que só apareça os pedidos do usuário que realizou eles
 
-        def get_queryset(self, *args, **kwargs):
-            qs = super().get_queryset(*args, **kwargs)
-            qs = qs.filter(usuario=self.request.user)
-            return qs
         
 
 class SalvarPedido(View):
@@ -121,10 +122,15 @@ class SalvarPedido(View):
             )
         )
         # return render(self.request, self.template_name, contexto)
-class Detalhe(View):
-    def get(self, *args, **kwargs):
-        return HttpResponse('Detalhe')
+class Detalhe(DispatchRequiredLoginMixin, DetailView):
+    model = Pedido
+    context_object_name = 'pedido'
+    template_name = 'pedido/detalhe.html'
+    pk_url_kwarg = 'pk'
     
-class Lista(View):
-    def get(self, *args, **kwargs):
-        return HttpResponse('Lista')
+class Lista(DispatchRequiredLoginMixin, ListView):
+    model = Pedido
+    context_object_name = 'pedidos'
+    template_name = 'pedido/lista.html'
+    paginate_by = 5
+    ordering = ['-id']
