@@ -6,6 +6,9 @@ from django.contrib import messages
 from django.http import HttpResponse
 from . import models
 from perfil.models import Perfil
+
+
+
 # Create your views here.
 class ListaProduto(ListView):
     model = models.Produto
