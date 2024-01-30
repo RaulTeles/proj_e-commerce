@@ -48,7 +48,7 @@ class UserForms(forms.ModelForm):
         validation_error_msgs = {}
 
         #pegando o usurio do input para depois fazer a validação
-        usuario_data = cleaned.get('username')
+        usuario_data = cleaned.get('username ')
         password_data = cleaned.get('password')
         password2_data = cleaned.get('password2')
         email_data = cleaned.get('email')

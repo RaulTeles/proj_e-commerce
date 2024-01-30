@@ -25,5 +25,4 @@ urlpatterns = [
     path('perfil/', include('perfil.urls')),
     path('pedido/', include('pedido.urls')),
     path('admin/', admin.site.urls, name= 'admin'),
-    path('_debug_/', include('debug_toolbar.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
